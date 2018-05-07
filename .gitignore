@@ -1,0 +1,3 @@
+.idea/
+openresty-php/config/openresty/logs/*
+openresty-php/config/php/logs/*

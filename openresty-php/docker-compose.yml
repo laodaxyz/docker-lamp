@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nginx:
+    # image: openresty/openresty
+    image: webphp:openresty
+    build: ./config/openresty/dockerfile/
+    hostname: ${NGINX_HOSTNAME}
+    ports:
+      - "${NGINX_PORT}:80"
+    links:
+      - "php"
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/openresty/logs/:/usr/local/openresty/nginx/logs
+      - ./config/openresty/etc/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./config/openresty/etc/conf.d:/usr/local/openresty/nginx/conf/conf.d
+      - ./www:/www
+    depends_on:
+      - php
+  php:
+    image: webphp:php
+    build: ./config/php/dockerfile/
+    hostname: ${PHP_HOSTNAME}
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/php/etc/php.ini:/usr/local/etc/php/php.ini
+      - ./config/php/etc/php-fpm.conf:/usr/local/etc/php/fpm/php-fpm.conf
+      - ./config/php/etc/php-fpm.d/www.conf:/usr/local/etc/php/fpm/php-fpm.d/www.conf
+      - ./config/php/logs/:/var/log/php/
+      - ./www:/www
