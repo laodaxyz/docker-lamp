@@ -1,3 +1,10 @@
 .idea/
 openresty-php/config/openresty/logs/*
 openresty-php/config/php/logs/*
+openresty-php/config/mongo/logs/*
+openresty-php/config/mongo/data/*
+openresty-php/config/mysql/logs/*
+openresty-php/config/mysql/data/*
+openresty-php/config/redis/logs/*
+openresty-php/config/redis/data/*
+openresty-php/www/*

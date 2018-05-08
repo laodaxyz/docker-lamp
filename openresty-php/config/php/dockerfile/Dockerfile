@@ -17,7 +17,6 @@ RUN apk update \
 
 
 ENTRYPOINT ["docker-php-entrypoint"]
-#WORKDIR /var/www/html
 
 EXPOSE 9000
 CMD ["php-fpm"]

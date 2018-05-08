@@ -1,7 +1,7 @@
-version: '3'
+version: '3.1'
 services:
   nginx:
-    # image: openresty/openresty
+    container_name: webphp-openresty
     image: webphp:openresty
     build: ./config/openresty/dockerfile/
     hostname: ${NGINX_HOSTNAME}
@@ -19,6 +19,7 @@ services:
     depends_on:
       - php
   php:
+    container_name: webphp-php
     image: webphp:php
     build: ./config/php/dockerfile/
     hostname: ${PHP_HOSTNAME}
@@ -30,3 +31,43 @@ services:
       - ./config/php/etc/php-fpm.d/www.conf:/usr/local/etc/php/fpm/php-fpm.d/www.conf
       - ./config/php/logs/:/var/log/php/
       - ./www:/www
+  mongo:
+    container_name: webphp-mongo
+    image: mongo:3.6
+    hostname: ${MONGO_HOSTNAME}
+    ports:
+      - "${MONGO_PORT}:27017"
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/mongo/etc/mongod.conf:/etc/mongod.conf
+      - ./config/mongo/data/:/data/db/
+      - ./config/mongo/logs/:/var/log/mongo/
+  mysql:
+    container_name: webphp-mysql
+    image: mysql:8
+    hostname: ${MYSQL_HOSTNAME}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    env_file:
+      - ./.env
+    environment:  
+      MYSQL_ROOT_PASSWORD: 123456
+    restart: always
+    volumes:
+      - ./config/mysql/etc/mysqld.cnf:/etc/mysql/my.cnf
+      - ./config/mysql/data/:/data/db
+      - ./config/mysql/init:/docker-entrypoint-initdb.d/
+      # - ./config/mysql/logs/error.log:/var/log/mysql/error.log
+  redis:
+    container_name: webphp-redis
+    image: redis:4-alpine
+    hostname: ${REDIS_HOSTNAME}
+    ports:
+      - "${REDIS_PORT}:6379"
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/redis/etc/redis.conf:/etc/redis.conf
+      - ./config/redis/data:/data
+      - ./config/redis/logs/:/var/log/redis/
