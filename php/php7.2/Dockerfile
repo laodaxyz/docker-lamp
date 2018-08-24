@@ -7,6 +7,8 @@ RUN set -xe \
 		nghttp2 \
 		cyrus-sasl \
 		zlib \
+		libmongoc \
+		libbson \
 	&& buildDeps=" \
 		libmemcached-dev \
 		libevent-dev \
@@ -14,7 +16,9 @@ RUN set -xe \
 		libressl-dev \
 		cyrus-sasl-dev \
 		linux-headers \
-		zlib-dev" \
+		zlib-dev \
+		libmongoc-dev \
+		libbson-dev" \
     && apk add --no-cache --update --virtual .build-deps $PHPIZE_DEPS $buildDeps \
 	\
 	&& docker-php-ext-install opcache pdo_mysql mysqli \
