@@ -17,21 +17,17 @@ RUN set -xe \
 		zlib-dev" \
     && apk add --no-cache --update --virtual .build-deps $PHPIZE_DEPS $buildDeps \
 	\
-	&& docker-php-ext-install opcache \
-	&& pecl install memcached-3.0.4 \
-    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
+	&& docker-php-ext-install opcache pdo_mysql mysqli \
+	\
+	&& pecl install -o -f memcached-3.0.4 \
+	&& docker-php-ext-enable memcached \
     && pecl install -o -f redis-4.1.1  \
-    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
-	&& pecl install -o -f swoole-4.0.4  \
-    && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
+	&& docker-php-ext-enable redis \
+	&& pecl install -o -f swoole-4.0.4 \
+    && docker-php-ext-enable swoole \
     && rm -rf /usr/share/php \
     && rm -rf /tmp/* \
-    && apk del .build-deps \
-	\
-	&& curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/ \
-    && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
-
+    && apk del .build-deps
 
 ENTRYPOINT ["docker-php-entrypoint"]
 EXPOSE 9000
