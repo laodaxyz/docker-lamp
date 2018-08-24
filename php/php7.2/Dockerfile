@@ -25,6 +25,8 @@ RUN set -xe \
 	&& docker-php-ext-enable redis \
 	&& pecl install -o -f swoole-4.0.4 \
     && docker-php-ext-enable swoole \
+	&& pecl install -o -f mongodb-1.5.2 \
+    && docker-php-ext-enable mongodb \
     && rm -rf /usr/share/php \
     && rm -rf /tmp/* \
     && apk del .build-deps
