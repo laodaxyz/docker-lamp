@@ -1,0 +1,60 @@
+安装：
+yum install -y yum-utils device-mapper-persistent-data lvm2 && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y docker-ce && systemctl start docker && systemctl enable docker
+https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-18.06.1.ce-3.el7.x86_64.rpm
+查看版本信息：yum list docker-ce --showduplicates | sort -r
+#国内镜像
+/etc/docker/daemon.json
+{"registry-mirrors": ["https://registry.docker-cn.com"]}
+
+## portainer
+docker run --name portainer -p 9001:9000 -v /var/run/docker.sock:/var/run/docker.sock -v data:/data -d portainer/portainer:1.17.1
+
+# php nginx 
+docker run --name php --hostname php -v $PWD:/var/www/html:ro -d php:7.2.9-fpm-alpine3.8
+docker run --name nginx --hostname nginx -p 80:80 -v $PWD:/var/www/html -v $PWD/conf.d:/etc/nginx/conf.d -v $PWD/logs:/var/log/nginx --link php:php -d nginx:1.15-alpine
+# openresty
+docker run -d --name openresty -p 80:80  openresty/openresty:1.13.6.2-alpine
+
+# mysql 
+docker run --name mysql -p 3306:3306 -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345678 -d mysql:5.7
+# postgres
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=12345678 -d postgres:10.4-alpine 
+# mongo
+docker volume create --name mongo-data
+docker run --name mongo -v mongo-data:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=12345678 -d mongo:3.7-xenial
+docker run --name mongo -p 27017:27017 -v mongo-data:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=12345678 -d mongo:3.7-xenial
+# redis
+docker run --name redis -p 6379:6379 -v $PWD/data:/data -d redis:4-alpine redis-server --appendonly yes
+
+# jenkins
+docker volume create --name jenkins-data
+docker run --name jenkins -p 8081:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home jenkins/jenkins:2.128-alpine
+
+# blueocean
+docker volume create --name blueocean-data
+docker run --name blueocean -u root --rm -p 8082:8080 -p 50000:50000 -v blueocean-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -d jenkinsci/blueocean:1.5.0
+
+# zabbix
+docker run --name mysql-server -p 3306:3306 -t -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="12345678" -e MYSQL_ROOT_PASSWORD="12345678" -d mysql:5.7
+docker run --name zabbix-java-gateway -t -d zabbix/zabbix-java-gateway:alpine-3.4.10
+docker run --name zabbix-server-mysql -t -e DB_SERVER_HOST="mysql-server" -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="12345678" -e MYSQL_ROOT_PASSWORD="12345678" -e ZBX_JAVAGATEWAY="zabbix-java-gateway" --link mysql-server:mysql --link zabbix-java-gateway:zabbix-java-gateway -p 10051:10051 -d zabbix/zabbix-server-mysql:alpine-3.4.10
+docker run --name zabbix-web-nginx-mysql -t -e DB_SERVER_HOST="mysql-server" -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="12345678" -e MYSQL_ROOT_PASSWORD="12345678" --link mysql-server:mysql --link zabbix-server-mysql:zabbix-server -p 10081:80 -d zabbix/zabbix-web-nginx-mysql:alpine-3.4.10
+账号：Admin  zabbix
+
+# elasticsearch
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.0
+docker run --name logstash --rm -it -v ~/pipeline/:/usr/share/logstash/pipeline/ docker.elastic.co/logstash/logstash:6.3.0
+
+# gogs 
+docker volume create --name gogs-data
+docker run --name=gogs -p 10022:22 -p 10080:3000 -v gogs-data:/data gogs/gogs:0.11.53
+
+# rancher2
+docker run --name rancher2 --restart=unless-stopped -p 20080:80 -p 20443:443 -d rancher/rancher:v2.0.2
+
+# rabbitmq
+docker run -d --hostname rabbitmq --name rabbitmq -p 5671:5671 -p 5672:5672 -p 4369:4369 -p 25672:25672 -p 15671:15671 -p 15672:15672  rabbitmq:3.7-management-alpine
+
+# gitlab
+docker run -d --name gitlab -p 10444:443 -p 10082:80 -p 10023:22 --restart always gitlab/gitlab-ce:11.1.0-ce.0
