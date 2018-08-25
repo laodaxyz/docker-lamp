@@ -1,5 +1,4 @@
 FROM php:7.2.9-fpm-alpine3.7
-# alpine3.8 安装 mongodb失败
 
 RUN set -xe \
 	&& apk add --no-cache \
