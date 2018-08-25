@@ -8,11 +8,11 @@ https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-18.0
 {"registry-mirrors": ["https://registry.docker-cn.com"]}
 
 ## portainer
-docker run --name portainer -p 9001:9000 -v /var/run/docker.sock:/var/run/docker.sock -v data:/data -d portainer/portainer:1.17.1
+docker run --name portainer -p 9001:9000 -v /var/run/docker.sock:/var/run/docker.sock -d portainer/portainer:1.19.1
 
 # php nginx 
-docker run --name php --hostname php -v $PWD:/var/www/html:ro -d php:7.2.9-fpm-alpine3.8
-docker run --name nginx --hostname nginx -p 80:80 -v $PWD:/var/www/html -v $PWD/conf.d:/etc/nginx/conf.d -v $PWD/logs:/var/log/nginx --link php:php -d nginx:1.15-alpine
+docker run --name php --hostname php -v $PWD:/var/www/html:ro -d php:7.2.9-fpm-alpine3.7
+docker run --name nginx --hostname nginx -p 80:80 -v $PWD:/var/www/html -v $PWD/conf:/etc/nginx/conf.d -v $PWD/logs:/var/log/nginx -d --restart=always nginx:1.15-alpine
 # openresty
 docker run -d --name openresty -p 80:80  openresty/openresty:1.13.6.2-alpine
 
