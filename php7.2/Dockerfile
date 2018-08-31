@@ -32,6 +32,5 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 	&& php composer-setup.php --install-dir=/usr/local/bin --filename=composer.phar \
 	&& php -r "unlink('composer-setup.php');"
 
-ENTRYPOINT ["docker-php-entrypoint"]
 EXPOSE 9000
 CMD ["php-fpm"]
