@@ -1,13 +1,16 @@
-FROM php:7.2.9-fpm-alpine3.7
+FROM registry.cn-beijing.aliyuncs.com/hefan/php:7.2
 
 RUN set -xe \
-	&& addgroup -S nginx \
-	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
-	&& apk add --no-cache nginx \
-	&& mkdir -p /run/nginx \
-	&& touch /run/nginx/nginx.pid
+    && apk add --no-cache --update nginx supervisor \
+    && mkdir -p /usr/local/nginx/logs
 
-EXPOSE 9000 80 443
-STOPSIGNAL SIGTERM
-#CMD ["php-fpm"] 进去容器启动php-fpm &
-CMD ["nginx", "-g", "daemon off;"]
+ADD conf/supervisord.conf /etc/supervisord.conf
+ADD conf/nginx.conf /etc/nginx/nginx.conf
+ADD conf/default.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /var/www/html
+ENTRYPOINT [""]
+RUN chmod -R 755 /var/www/html
+
+EXPOSE 443 80
+CMD ["sh","/var/www/html/start.sh"]
