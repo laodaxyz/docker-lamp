@@ -14,4 +14,4 @@ WORKDIR /var/www/html
 ENTRYPOINT [""]
 
 EXPOSE 443 80
-CMD ["sh","/var/www/html/start.sh"]
+CMD ["sh","/user/local/start.sh"]
