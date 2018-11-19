@@ -7,7 +7,6 @@ RUN set -xe \
 		cyrus-sasl \
 		zlib \
 	&& buildDeps=" \
-		libmemcached-dev \
 		libevent-dev \
 		nghttp2-dev \
 		libressl-dev \
@@ -25,6 +24,10 @@ RUN set -xe \
     && rm -rf /usr/share/php \
     && rm -rf /tmp/* \
     && apk del .build-deps
+	
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+	&& php composer-setup.php --install-dir=/usr/local/bin --filename=composer.phar \
+	&& php -r "unlink('composer-setup.php');"
 
 EXPOSE 9000
 CMD ["php-fpm"]
