@@ -1,0 +1,1 @@
+docker run --name hadoop0 --hostname hadoop0 --ip 172.17.0.150 --add-host hadoop1:172.17.0.151 -p 50070:50070 -p 8088:8088 -d  hadoop:master
