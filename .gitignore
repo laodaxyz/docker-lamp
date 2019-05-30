@@ -1,4 +1,8 @@
 .idea/
+.mvn/
+target/
+__pycache__/
+node_modules/
 openresty-php/config/openresty/logs/*
 openresty-php/config/php/logs/*
 openresty-php/config/mongo/logs/*
@@ -8,3 +12,4 @@ openresty-php/config/mysql/data/*
 openresty-php/config/redis/logs/*
 openresty-php/config/redis/data/*
 openresty-php/www/*
+
